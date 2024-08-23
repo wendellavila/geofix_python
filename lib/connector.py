@@ -1,7 +1,10 @@
 from geopandas import GeoDataFrame
+from lib import converter
 
 def has_lines(gdf: GeoDataFrame) -> bool:
-    return False
+    line_string = gdf.at[0, 'geometry']
+    points = converter.line_string_to_points(line_string)
+    return True if len(points) == 2 else False
 
 def connect_lines(gdf: GeoDataFrame) -> GeoDataFrame:
     return gdf
