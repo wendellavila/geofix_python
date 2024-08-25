@@ -2,10 +2,15 @@ from geopandas import GeoDataFrame
 from shapely import LineString
 import numpy as np
 
-def linestring_to_lng_lat(linestring: LineString) -> list:
-    return np.vstack(linestring.coords.xy).T.tolist()
+def sort_lng_lat(points: list[list[float]]) -> list[list[float]]:
+    points.sort(key=lambda x: (x[1], x[0]))
+    return points
 
-def lng_lat_to_linestring(lng_lat: list) -> LineString:
+def linestring_to_lng_lat(linestring: LineString) -> list[list[float]]:
+    points = np.vstack(linestring.coords.xy).T.tolist()
+    return sort_lng_lat(points)
+
+def lng_lat_to_linestring(lng_lat: list[list[float]]) -> LineString:
     return LineString(lng_lat)
 
 def coordinates_to_wgs84(gdf: GeoDataFrame) -> GeoDataFrame:
