@@ -1,3 +1,5 @@
+# imports
+# dependências
 import numpy as np
 from geopandas import GeoDataFrame
 from shapely import LineString

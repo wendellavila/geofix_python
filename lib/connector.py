@@ -1,7 +1,10 @@
+# imports
+# biblioteca padrão
 import math
+# dependências
 from geopandas import GeoDataFrame
 from shapely import LineString
-
+# módulo customizado
 from lib import converter
 
 def _haversine_distance(start: list[float], end: list[float]) -> float:
@@ -12,7 +15,7 @@ def _haversine_distance(start: list[float], end: list[float]) -> float:
     :param list[float] end: O ponto final, no formato [lng, lat].
     :return distance: A distância em Km.
     """
-    R = 6371 # Radius of the earth in km (Volumetric mean radius)
+    R = 6371 # Raio da terra em Km (Raio volumétrico médio)
     P = math.pi / 180
 
     START_LAT = start[1]
