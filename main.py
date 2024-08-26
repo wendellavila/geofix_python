@@ -9,4 +9,4 @@ gdf = converter.split_multipart(gdf)
 gdf = connector.connect_gaps(gdf, distance_limit=0.05)
 gdf = connector.connect_gaps(gdf, distance_limit=0.08)
 
-file_handler.write_file2(gdf, 'out/file2pre.geojson')
+file_handler.write_geojson(gdf, 'out/file2pre.geojson')

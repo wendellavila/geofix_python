@@ -1,13 +1,17 @@
 import math
-import shapely
-import numpy as np
-
 from geopandas import GeoDataFrame
 from shapely import LineString
 
 from lib import converter
 
 def _haversine_distance(start: list[float], end: list[float]) -> float:
+    """
+    Utiliza a fórmula de haversine para calcular a distância entre duas coordenadas.
+
+    :param list[float] start: O ponto inicial, no formato [lng, lat].
+    :param list[float] end: O ponto final, no formato [lng, lat].
+    :return distance: A distância em Km.
+    """
     R = 6371 # Radius of the earth in km (Volumetric mean radius)
     P = math.pi / 180
 
@@ -23,22 +27,27 @@ def _haversine_distance(start: list[float], end: list[float]) -> float:
     
     return 2 * R * math.asin(math.sqrt(A))
 
-def _linestring_length(points: list[list[float]]) -> float:
-    total_length = 0.0
-
-    for i in range (0, len(points) - 1):
-      START = points[i]
-      END = points[i+1]
-      total_length += _haversine_distance(START, END)
-      
-    return total_length
-
 def _combine_points(a: LineString, b: LineString) -> list[list[float]]:
+    """
+    Converte LineStrings para lista de longitudes e latitudes e combina seus pontos.
+    
+    :param LineString a: Uma LineString criada pela biblioteca shapely.
+    :param LineString b: Uma LineString criada pela biblioteca shapely.
+    :return coordinates: Uma lista de coordenadas, onde cada coordenada está no formato [lng, lat].
+    """
     a_list = converter.linestring_to_lng_lat(a)
     b_list = converter.linestring_to_lng_lat(b)
     return a_list + b_list
 
 def _recursive_merge_rows(gdf: GeoDataFrame, index: int = 0, distance_limit: float = 0.1) -> GeoDataFrame:
+    """
+    Função recursiva que percorre um GeoDataFrame mesclando LineStrings cujas extremidades estejam a
+    uma distância menor que distance_limit.
+
+    :param GeoDataFrame gdf: Um GeoDataFrame criado pela biblioteca geopandas.
+    :param int index: O índice atual para que seja feito o percorrimento do dataframe.
+    :return gdf: Um GeoDataFrame com linhas mescladas.
+    """
     if index < 0 or index > gdf.index.max():
         return gdf
     
@@ -65,6 +74,14 @@ def _recursive_merge_rows(gdf: GeoDataFrame, index: int = 0, distance_limit: flo
     return _recursive_merge_rows(gdf, index+1, distance_limit)
 
 def connect_gaps(gdf: GeoDataFrame, distance_limit: float = 0.1) -> GeoDataFrame:
+    """
+    Conecta LineStrings de forma a remover espaços vazios entre segmentos de linhas.
+    
+    :param GeoDataFrame gdf: Um GeoDataFrame criado pela biblioteca geopandas.
+    :param float distance_limit: A distância máxima em Km para que dois segmentos
+    de reta sejam considerados candidatos a serem mesclados.
+    :return gdf: Um GeoDataFrame com linhas mescladas.
+    """
     gdf['coordinates'] = gdf['geometry'].apply(converter.linestring_to_lng_lat)
     gdf['start'] = gdf['coordinates'].apply(lambda x: x[0])
     gdf['end'] = gdf['coordinates'].apply(lambda x: x[len(x) - 1])
