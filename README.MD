@@ -9,6 +9,10 @@ Script para padronizar arquivos de linhas vetorizadas e georreferenciadas.
 - Padroniza coordenadas no formato WGS84 (EPSG:4326).
 - Exporta dados resultantes no formato Shapefile contidos em um arquivo .zip.
 
+## Instalação
+Para o desenvolvimento do script, o Python foi utilizado na versão 3.12.4, mas qualquer versão a partir da 3.6 deve ser compatível.
+As dependências utilizadas estão detalhadas no arquivo requirements.txt.
+
 ## Utilização
 O script pode ser executado via linha de comando através do arquivo geofix.py:
 
